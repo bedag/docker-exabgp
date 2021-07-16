@@ -35,6 +35,8 @@ global: &global
   name: exabgp 
 
 global_vars: &global_vars
+    build:
+      image: debian:buster-slim
     maintainer: "noc@bedag.ch"
 
 # e2g versions
