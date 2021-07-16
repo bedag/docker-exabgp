@@ -1,0 +1,78 @@
+---
+#
+# Copyright © 2021 Bedag Informatik AG
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+build_base: &build_base
+  source:
+    name: debian 
+    tags: ["buster-slim"]
+
+prod_base: &prod_base
+  source:
+    name: "gcr.io/distroless/python3"
+    tags: ["latest"]
+
+debug_base: &debug_base
+  source:
+    name: gcr.io/distroless/python3
+    tags: ["debug"]
+
+#global
+global: &global
+  namespace: "bedag"
+  name: exabgp 
+
+global_vars: &global_vars
+    maintainer: "noc@bedag.ch"
+
+# e2g versions
+4213vars: &4213vars
+  variables:
+    <<: *global_vars
+    major: 4
+    minor: 2
+    patch: 13
+    latest: true
+
+# selectors for builds
+selectors:
+  master_and_tags: &master_and_tags ['^tag-(\d+\.)+\d+$', '^branch-main$']
+
+build_prod_template: &build_prod_template
+  - <<: *global
+    <<: *prod_base
+    tags:
+    - template: "{{ major }}.{{ minor }}.{{ patch }}-{{ git_commit }}"
+    - template: "{{ major }}.{{ minor }}.{{ patch }}"
+    - template: "{{ major }}.{{ minor }}"
+    - template: "{{ major }}"
+    - template: "{%- if latest == true %}latest{% else %}dummy{%- endif %}"
+    
+build_debug_template: &build_debug_template
+  - <<: *global
+    <<: *debug_base
+    tags:
+    - template: "{{ major }}.{{ minor }}.{{ patch }}-{{ git_commit }}-debug"
+    - template: "{{ major }}.{{ minor }}.{{ patch }}-debug"
+    - template: "{{ major }}.{{ minor }}-debug"
+    - template: "{{ major }}-debug"
+    - template: "{%- if latest == true %}latest-debug{% else %}dummy{%- endif %}"
+
+# set newest release at the bottom
+builds:
+- <<: *build_prod_template
+  <<: *4213vars
+- <<: *build_debug_template
+  <<: *4213vars
