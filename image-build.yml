@@ -47,14 +47,6 @@ global_vars: &global_vars
     minor: 2
     patch: 13
     latest: false
-
-4214vars: &4214vars
-  variables:
-    <<: *global_vars
-    major: 4
-    minor: 2
-    patch: 14
-    latest: false
   
 # e2g versions
 4215vars: &4215vars
@@ -103,10 +95,6 @@ builds:
   <<: *4213vars
 - <<: *build_debug_template
   <<: *4213vars
-- <<: *build_prod_template
-  <<: *4214vars
-- <<: *build_debug_template
-  <<: *4214vars
 - <<: *build_prod_template
   <<: *4215vars
 - <<: *build_debug_template
