@@ -1,4 +1,3 @@
-
 #
 # Copyright © 2021 Bedag Informatik AG
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,9 +26,17 @@ RUN apt update && apt install python3-venv gcc libpython3-dev git  -y \
     && git clone -b {{ major }}.{{ minor }}.{{ patch }} https://github.com/Exa-Networks/exabgp.git /app \
     && cd /app \
     && python3 -m venv /venv \ 
-    && /venv/bin/pip install --force-reinstall --no-cache-dir --compile ./ 
+    && mkdir -p /venv/run/exabgp \
+    && chown nobody: /venv/run \
+    && /venv/bin/pip install  --force-reinstall --no-cache-dir --compile ./ \
+    && /venv/bin/python3 /venv/bin/exabgp --fi > /venv/etc/exabgp/exabgp.env
 
 FROM {{ _source["name"] }}:{{ _source["tag"] }}
 COPY --from=build /venv /venv
-ENTRYPOINT ["/venv/bin/python3"]
-CMD ["/venv/bin/exabgp"] 
+COPY ./examples/ /venv/etc/exabgp/
+RUN mkfifo //venv/run/exabgp/exabgp.in && mkfifo //venv/run/exabgp/exabgp.out 
+USER nobody
+
+ENTRYPOINT ["/venv/bin/python3", "/venv/bin/exabgp"]
+CMD ["/venv/etc/exabgp/test.conf"] 
+
