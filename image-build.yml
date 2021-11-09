@@ -17,7 +17,7 @@
 build_base: &build_base
   source:
     name: debian 
-    tags: ["buster-slim"]
+    tags: ["bullseye-slim"]
 
 prod_base: &prod_base
   source:
@@ -36,7 +36,7 @@ global: &global
 
 global_vars: &global_vars
     build:
-      image: debian:buster-slim
+      image: debian:bullseye-slim
     maintainer: "noc@bedag.ch"
 
 # exabgp versions
