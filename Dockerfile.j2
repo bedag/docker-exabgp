@@ -30,11 +30,13 @@ RUN apt update && apt install python3-venv gcc libpython3-dev git  -y \
     && chown nobody: /venv/run \
     && /venv/bin/pip install  --force-reinstall --no-cache-dir --compile ./ \
     && /venv/bin/python3 /venv/bin/exabgp --fi > /venv/etc/exabgp/exabgp.env \
-    && mkfifo //venv/run/exabgp/exabgp.in && mkfifo //venv/run/exabgp/exabgp.out 
+    && mkfifo //venv/run/exabgp/exabgp.in && mkfifo //venv/run/exabgp/exabgp.out \
+    && chown nobody: /sbin/ip
 USER nobody
 
 FROM {{ _source["name"] }}:{{ _source["tag"] }}
 COPY --from=build /venv /venv
+COPY --from=build /sbin/ip /sbin/ip
 COPY ./examples/ /venv/etc/exabgp/
 USER nobody
 
