@@ -38,6 +38,12 @@ FROM {{ _source["name"] }}:{{ _source["tag"] }}
 COPY --from=build /venv /venv
 COPY --from=build /sbin/ip /sbin/ip
 COPY --from=build /usr/lib/x86_64-linux-gnu/libbpf.so.0 /usr/lib/x86_64-linux-gnu/libbpf.so.0
+COPY --from=build /usr/lib/x86_64-linux-gnu/libelf.so.1 /usr/lib/x86_64-linux-gnu/libelf.so.1
+COPY --from=build /usr/lib/x86_64-linux-gnu/libmnl.so.0 /usr/lib/x86_64-linux-gnu/libmnl.so.0
+COPY --from=build /usr/lib/x86_64-linux-gnu/libbsd.so.0 /usr/lib/x86_64-linux-gnu/libbsd.so.0
+COPY --from=build /lib/x86_64-linux-gnu/libcap.so.2 /lib/x86_64-linux-gnu/libcap.so.2
+COPY --from=build /lib/x86_64-linux-gnu/libdl.so.2 /lib/x86_64-linux-gnu/libdl.so.2
+COPY --from=build /usr/lib/x86_64-linux-gnu/libmd.so.0 /usr/lib/x86_64-linux-gnu/libmd.so.0
 COPY ./examples/ /venv/etc/exabgp/
 USER nobody
 
