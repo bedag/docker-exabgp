@@ -22,7 +22,7 @@ LABEL  \{% for tag in _dest['tags']|list %}
 {%- endfor %}
   "maintainer"="{{ maintainer }}" 
 
-RUN apt update && apt install python3-venv gcc libpython3-dev git  -y \ 
+RUN apt update && apt install python3-venv gcc libpython3-dev git iproute2  -y \ 
     && git clone -b {{ major }}.{{ minor }}.{{ patch }} https://github.com/Exa-Networks/exabgp.git /app \
     && cd /app \
     && python3 -m venv /venv \ 
